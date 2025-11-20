@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "meubarberapp",
+    "slug": "meubarberapp",
+    "plugins": [
+      "expo-router",
+      "expo-sqlite"
+    ],
+    "scheme": "meubarberapp",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e5bafdc4-1208-46ee-b9a4-1c159f9c776a"
+      }
+    },
+    "android": {
+      "package": "com.davigarcia.meubarberapp"
+    }
+  }
+}
