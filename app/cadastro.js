@@ -6,6 +6,7 @@ const PINK = '#ff9ee6';
 export default function CadastroScreen() {
   const router = useRouter();
 
+  // exemplo de como ficaria um cadastro caso o app fosse disponibilizado na playstore para varias pessoas e nao para apenas uma
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Criar conta</Text>

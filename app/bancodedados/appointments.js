@@ -1,6 +1,6 @@
-import { getDB } from "./database"; // retorna a conexao do banco de dados
+import { getDB } from "./database"; // liga o banco de dados 
 
-// verificar se excistem dados
+// verifica se existem dados
 export async function hasAnyAppointment() {
   const db = getDB();
   const result = await db.getFirstAsync(
@@ -9,33 +9,56 @@ export async function hasAnyAppointment() {
   return result.total > 0;
 }
 
-// funcao para exportar dados 
-export async function importFromLocalConst(agendamentos) {
+// salva agendamento
+export async function salvarAgendamento(agendamento) {
   const db = getDB();
 
-  for (const date in agendamentos) { 
-    const item = agendamentos[date]; 
-
-    const result = await db.runAsync( 
-      `
+  const result = await db.runAsync(
+    `
       INSERT INTO appointments (date, name, time)
       VALUES (?, ?, ?)
-      `,
-      [date, item.name, item.time]
-    );
+    `,
+    [agendamento.date, agendamento.name, agendamento.time]
+  );
 
-    const appointmentId = result.lastInsertRowId;
+  const appointmentId = result.lastInsertRowId;
 
-    for (const serv of item.services) {
-      await db.runAsync(
-        `
+  for (const serv of agendamento.services) {
+    await db.runAsync(
+      `
         INSERT INTO services (appointment_id, nome, preco)
         VALUES (?, ?, ?)
-        `,
-        [appointmentId, serv.nome, serv.preco]
-      );
-    }
+      `,
+      [appointmentId, serv.nome, serv.preco]
+    );
   }
 
-  console.log("Importação concluída!");
+  console.log("Agendamento salvo no banco:", agendamento.date);
+  return true;
+}
+
+// carregar dados no formato do calendário
+export async function getAllAppointmentsFormatted() {
+  const db = getDB();
+
+  const appointments = await db.getAllAsync(`
+    SELECT id, date, name, time
+    FROM appointments
+  `);
+
+  const result = {};
+
+  for (const item of appointments) {
+    const servicos = await db.getAllAsync(
+      `SELECT nome, preco FROM services WHERE appointment_id = ?`,
+      [item.id]
+    );
+
+    result[item.date] = {
+      name: item.name,
+      time: item.time,
+      services: servicos,
+    };
+  }
+  return result;
 }

@@ -92,7 +92,7 @@ export default function TestBD() {
         </View>
       ))}
 
-      {/* botao */}
+      {/* botao de apagar */}
       <TouchableOpacity style={styles.deleteButton} onPress={confirmarExclusao}>
         <Text style={styles.deleteButtonText}>Apagar Todos os Dados</Text>
       </TouchableOpacity>

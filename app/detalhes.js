@@ -37,7 +37,6 @@ export default function DetalhesCliente() {
         <Text style={styles.clientName}>{nome}</Text>
       </View>
 
-      {/* tabs */}
       <View style={styles.tabs}>
         <Text style={[styles.tabText, styles.tabActive]}>Proprietário</Text>
         <Text style={styles.tabText}>Cliente</Text>

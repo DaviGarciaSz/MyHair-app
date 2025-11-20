@@ -1,7 +1,10 @@
 {
   "expo": {
-    "name": "meubarberapp",
-    "slug": "meubarberapp",
+    "name": "MyHair",
+    "slug": "MyHair",
+
+    "icon": "./assets/images/myhairlogo.png",
+
     "plugins": [
       "expo-router",
       "expo-sqlite"

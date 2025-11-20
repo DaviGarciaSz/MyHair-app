@@ -1,7 +1,8 @@
-import { useState } from 'react'; // salvar modificao ao atualizar a pagina
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'; // scrolla a pag, estilo, texto, touch de botoes
-import { Calendar } from 'react-native-calendars'; // import componentes de calendario ja prontos
-import { agendamentosmarcados } from "./calendario"; 
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Calendar } from 'react-native-calendars';
+import { agendamentosmarcados } from "./calendario";
+import { salvarAgendamento } from "./bancodedados/appointments";
 
 const PINK = '#ff9ee6';
 
@@ -12,9 +13,54 @@ export default function AgendamentoScreen() {
   const [preco, setPreco] = useState('');
   const [horario, setHorario] = useState('');
 
+  async function handleSave() {
+    if (!selected) {
+      alert("Selecione uma data no calendário.");
+      return;
+    }
+    if (!nome.trim() || !servico.trim() || !preco.trim() || !horario.trim()) {
+      alert("Preencha todos os campos.");
+      return;
+    }
+
+    try {
+      await salvarAgendamento({
+        date: selected,
+        name: nome,
+        time: horario,
+        services: [
+          { nome: servico, preco: preco }
+        ]
+      });
+
+      console.log("Salvo no banco!");
+
+    } catch (e) {
+      console.log("Erro ao salvar no banco:", e);
+      alert("Erro ao salvar no banco de dados");
+      return;
+    }
+
+    // ----- Atualizar o objeto local (opcional, usado pelo calendário) -----
+    agendamentosmarcados[selected] = {
+      name: nome,
+      time: horario,
+      services: [
+        { nome: servico, preco: `R$ ${preco}` }
+      ]
+    };
+
+    alert("Agendamento salvo!");
+
+    // Limpar campos
+    setNome("");
+    setServico("");
+    setPreco("");
+    setHorario("");
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-
       <Text style={styles.title}>Agendar Horário</Text>
 
       <Calendar
@@ -44,7 +90,7 @@ export default function AgendamentoScreen() {
         onChangeText={setNome}
       />
 
-       <Text style={styles.label}>Serviço</Text>
+      <Text style={styles.label}>Serviço</Text>
       <TextInput
         style={styles.input}
         placeholder="Ex: Corte e Escova"
@@ -69,36 +115,9 @@ export default function AgendamentoScreen() {
         onChangeText={setHorario}
       />
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          if (!selected) {
-            alert("Selecione uma data no calendário.");
-            return;
-          }
-          if (!nome.trim() || !servico.trim() || !preco.trim()) {
-            alert("Preencha todos os campos.");
-            return;
-          }
-          
-          agendamentosmarcados[selected] = {
-            name: nome,
-            time: horario,
-            services: [
-              { nome: servico, preco: `R$ ${preco}` }
-            ]
-          };
-
-          alert("Agendamento salvo!");
-
-          setNome("");
-          setServico("");
-          setPreco("");
-        }}
-      >
+      <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Salvar Agendamento</Text>
       </TouchableOpacity>
-
     </ScrollView>
   );
 }

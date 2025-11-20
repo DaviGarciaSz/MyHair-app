@@ -2,7 +2,7 @@ import * as SQLite from "expo-sqlite";
 
 let db = null;
 
-// iniciar banco de dados async
+// iniciar banco de dados async e criar tabelas
 export async function initDatabase() {
   try {
     db = await SQLite.openDatabaseAsync("MyHair.db3");
