@@ -41,7 +41,6 @@ export default function AgendamentoScreen() {
       return;
     }
 
-    // ----- Atualizar o objeto local (opcional, usado pelo calendário) -----
     agendamentosmarcados[selected] = {
       name: nome,
       time: horario,
@@ -52,7 +51,6 @@ export default function AgendamentoScreen() {
 
     alert("Agendamento salvo!");
 
-    // Limpar campos
     setNome("");
     setServico("");
     setPreco("");
